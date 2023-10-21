@@ -22,8 +22,8 @@ jobs:
         context: ./kube-news/src
         file: ./kube-news/src/Dockerfile
         push: true
-        tags:
-          rukasu/kube-news:${{ github.run_number }}
+        tags: |
+          rukasu/kube-news:v${{ github.run_number }}
           rukasu/kube-news:latest
   CD:
     runs-on: ubuntu-latest
