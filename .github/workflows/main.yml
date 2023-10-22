@@ -1,0 +1,41 @@
+name: CI-CD
+
+on:
+  push:
+    branches: ["main"]
+  workflow_dispatch:
+
+jobs:
+  CI:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4.1.1
+    - name: Efetuar o login no docker hub
+      uses: docker/login-action@v3.0.0
+      with:
+        username: ${{ secrets.DOCKERHUB_USER }}
+        password: ${{ secrets.DOCKERHUB_PWD }}
+    - name: Construcao e envio de imagem
+      uses: docker/build-push-action@v5.0.0
+      with:
+        context: ./kube-news/src
+        file: ./kube-news/src/Dockerfile
+        push: true
+        tags: |
+          rukasu/kube-news:v${{ github.run_number }}
+          rukasu/kube-news:latest
+  CD:
+    runs-on: ubuntu-latest
+    needs: [CI]
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4.1.1
+    - name: Autenticar na AWS
+      run: echo "Autenticar na AWS"
+    - name: Configurar o Kubeconfig
+      run: echo "Configurar o Kubeconfig"
+    - name: Aplicar o Deploy
+      run: echo "Aplicar o Deploy"
+    - name: Executar o Kubectl apply
+      run: echo "Executar o Kubectl apply"
